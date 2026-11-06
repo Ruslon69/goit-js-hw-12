@@ -44,9 +44,12 @@ export default {
     });
 
     try {
-      const response = await fetch(pixabayUrl.href, { redirect: 'error' });
+      const response = await fetch(pixabayUrl.href, { redirect: 'manual' });
       if (!response.ok) {
-        return new Response(null, { status: response.status, headers });
+        return new Response(null, {
+          status: response.status >= 400 ? response.status : 502,
+          headers,
+        });
       }
 
       const result = new Response(response.body, {
