@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Search Pixabay photos and explore them in a full-size gallery."
+    />
+    <title>Image Search · GoIT Homework 12</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 class="page-title">Image search</h1>
+      <p class="page-description">
+        Find a little inspiration. Explore photos from
+        <a href="https://pixabay.com/" target="_blank" rel="noopener noreferrer"
+          >Pixabay</a
+        >.
+      </p>
+
+      <form class="form" role="search">
+        <label>
+          <span class="visually-hidden">Search images</span>
+          <input
+            type="text"
+            name="search-text"
+            placeholder="Search images..."
+            autocomplete="off"
+            maxlength="100"
+            required
+          />
+        </label>
+        <button type="submit">Search</button>
+      </form>
+
+      <ul class="gallery" aria-busy="false"></ul>
+      <button class="load-more" type="button">Load more</button>
+
+      <div class="loader" role="status" aria-live="polite">
+        <span class="visually-hidden">Loading images...</span>
+      </div>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
