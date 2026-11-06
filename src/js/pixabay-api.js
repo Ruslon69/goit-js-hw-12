@@ -20,7 +20,7 @@ export async function getImagesByQuery(query, page) {
       page,
       per_page: IMAGES_PER_PAGE,
     },
-    timeout: 15000,
+    timeout: proxyUrl ? 25000 : 15000,
   });
 
   return data;

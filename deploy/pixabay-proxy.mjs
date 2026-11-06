@@ -44,7 +44,24 @@ export default {
     });
 
     try {
-      const response = await fetch(pixabayUrl.href, { redirect: 'manual' });
+      const requestOptions = { redirect: 'manual' };
+      let response = await fetch(pixabayUrl.href, requestOptions);
+      if (response.status === 429) {
+        const retryAfter = Number(response.headers.get('Retry-After'));
+        if (
+          Number.isInteger(retryAfter) &&
+          retryAfter > 0 &&
+          retryAfter <= 10
+        ) {
+          await response.body?.cancel();
+          // Pixabay can still be throttling when Retry-After first elapses.
+          await new Promise(resolve =>
+            setTimeout(resolve, (retryAfter + 5) * 1000)
+          );
+          response = await fetch(pixabayUrl.href, requestOptions);
+        }
+      }
+
       if (!response.ok) {
         return new Response(null, {
           status: response.status >= 400 ? response.status : 502,
