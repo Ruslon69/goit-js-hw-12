@@ -3,24 +3,34 @@ import axios from 'axios';
 export const IMAGES_PER_PAGE = 15;
 
 const proxyUrl = import.meta.env.VITE_PIXABAY_PROXY_URL;
-const devKey = import.meta.env.DEV && import.meta.env.VITE_PIXABAY_API_KEY;
 
 export async function getImagesByQuery(query, page) {
-  if (!proxyUrl && !devKey) {
-    throw new Error('Pixabay API is not configured');
+  const params = {
+    q: query,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    page,
+    per_page: IMAGES_PER_PAGE,
+  };
+
+  if (proxyUrl) {
+    // deploy/pixabay-proxy.mjs requires the PIXABAY_API_KEY secret and sends
+    // it as the key parameter in every request it forwards to Pixabay.
+    const { data } = await axios.get(proxyUrl, { params, timeout: 25000 });
+    return data;
   }
 
-  const { data } = await axios.get(proxyUrl || 'https://pixabay.com/api/', {
-    params: {
-      key: proxyUrl ? undefined : devKey,
-      q: query,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: true,
-      page,
-      per_page: IMAGES_PER_PAGE,
-    },
-    timeout: proxyUrl ? 25000 : 15000,
+  const apiKey = import.meta.env.DEV
+    ? import.meta.env.VITE_PIXABAY_API_KEY
+    : '';
+  if (!apiKey) {
+    throw new Error('Configure the Pixabay proxy or a local development key.');
+  }
+
+  const { data } = await axios.get('https://pixabay.com/api/', {
+    params: { ...params, key: apiKey },
+    timeout: 15000,
   });
 
   return data;

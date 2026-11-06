@@ -100,6 +100,9 @@ function showEndOfResults() {
 }
 
 function scrollGallery() {
-  const { height } = gallery.firstElementChild.getBoundingClientRect();
+  const firstCard = gallery.firstElementChild;
+  if (!firstCard) return;
+
+  const { height } = firstCard.getBoundingClientRect();
   window.scrollBy({ top: height * 2, behavior: 'smooth' });
 }
